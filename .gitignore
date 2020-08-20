@@ -1,0 +1,7 @@
+# Folder
+.vs/
+obj/
+bin/
+
+# Config files
+launchSettings.json
