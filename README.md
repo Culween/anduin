@@ -1,1 +1,2 @@
-# Anduin, A Task Management
+# Anduin
+A Task Management
