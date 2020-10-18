@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Anduin.Dispatcher.GrainInterfaces
 {
     [Version(1)]
-    public interface IDispacherTaskLotGrain : IGrainWithGuidCompoundKey
+    public interface IJobDispatchGrain : IGrainWithGuidCompoundKey
     {
         Task Start(string startWay);
     }
