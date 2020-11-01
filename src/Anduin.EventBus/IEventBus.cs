@@ -6,9 +6,9 @@ namespace Anduin.EventBus
 {
     public interface IEventBus
     {
-        Task Publish(IntegrationEvent @event, string topic = null);
-
         void Start();
+
+        Task Publish(IntegrationEvent @event, string topic = null);
 
         void Subscribe<T, TH>()
             where T : IntegrationEvent
