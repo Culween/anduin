@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Anduin.EventBus.Events;
+using Anduin.EventBus.Serializers;
 
 namespace Anduin.EventBus
 {
@@ -12,13 +13,17 @@ namespace Anduin.EventBus
         private volatile bool _isConsuming = false;
 
         private readonly EventBusOptions _options;
-        private readonly IMessageConsumer _messageConsumer;
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly IMessagePublisher _publisher;
+        private readonly IMessageConsumer _consumer;
+        private readonly IEventSerializer _serializer;
         private readonly ILogger<EventBus> _logger;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public EventBus(
             IOptions<EventBusOptions> options,
-            IMessageConsumer messageConsumer,
+            IMessagePublisher publisher,
+            IMessageConsumer consumer,
+            IEventSerializer serializer,
             ILogger<EventBus> logger
             )
         {
@@ -26,7 +31,9 @@ namespace Anduin.EventBus
             if (string.IsNullOrEmpty(_options.DefaultPublishTopic))
                 throw new ArgumentNullException(nameof(_options.DefaultPublishTopic));
 
-            _messageConsumer = messageConsumer ?? throw new ArgumentNullException(nameof(messageConsumer));
+            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+            _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _logger = logger;
         }
 
@@ -39,12 +46,12 @@ namespace Anduin.EventBus
                 {
                     try
                     {
-                        _messageConsumer.OnMessageReceived -= OnMessageReceived;
-                        _messageConsumer.OnMessageReceived += OnMessageReceived;
+                        _consumer.OnMessageReceived -= OnMessageReceived;
+                        _consumer.OnMessageReceived += OnMessageReceived;
 
                         var topics = _options.ConsumingTopics;
-                        _messageConsumer.Subscribe(topics);
-                        _messageConsumer.Listening(_cts.Token);
+                        _consumer.Subscribe(topics);
+                        _consumer.Listening(_cts.Token);
                     }
                     catch (OperationCanceledException)
                     {
@@ -64,9 +71,19 @@ namespace Anduin.EventBus
             }
         }
 
-        public Task Publish(IntegrationEvent @event, string topic = null)
+        public async Task Publish(IntegrationEvent @event, string topic = null)
         {
-            throw new NotImplementedException();
+            topic = topic ?? _options.DefaultPublishTopic;
+            try
+            {
+                byte[] eventBytes = _serializer.Serialize(@event);
+                           
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
 
@@ -88,6 +105,11 @@ namespace Anduin.EventBus
         private void OnMessageReceived(object sender, MessageContext messageContext)
         {
 
+        }
+
+        private string GetRouteKey(IntegrationEvent @event)
+        {
+            return @event.RouteKey ?? @event.Id;
         }
     }
 }
