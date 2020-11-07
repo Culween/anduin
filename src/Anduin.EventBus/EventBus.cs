@@ -71,9 +71,9 @@ namespace Anduin.EventBus
             }
         }
 
-        public async Task Publish(IntegrationEvent @event, string topic = null)
+        public async Task Publish(IntegrationEvent @event)
         {
-            topic = topic ?? _options.DefaultPublishTopic;
+            //topic = topic ?? _options.DefaultPublishTopic;
             try
             {
                 byte[] eventBytes = _serializer.Serialize(@event);
@@ -90,14 +90,14 @@ namespace Anduin.EventBus
 
         public void Subscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+            where TH : IEventHandler<T>
         {
             throw new NotImplementedException();
         }
 
         public void Unsubscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+            where TH : IEventHandler<T>
         {
             throw new NotImplementedException();
         }

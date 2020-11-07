@@ -8,14 +8,14 @@ namespace Anduin.EventBus
     {
         void Start();
 
-        Task Publish(IntegrationEvent @event, string topic = null);
+        Task Publish(IntegrationEvent @event);
 
         void Subscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+            where TH : IEventHandler<T>;
 
         void Unsubscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+            where TH : IEventHandler<T>;
     }
 }

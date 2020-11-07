@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Anduin.EventBus
 {
-    public interface IIntegrationEventHandler<in TEvent> where TEvent : IntegrationEvent
+    public interface IEventHandler<in TEvent> where TEvent : IntegrationEvent
     {
-        Task Handle(TEvent @event);
+        Task HandleAsync(TEvent @event);
     }
 }

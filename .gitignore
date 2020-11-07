@@ -5,3 +5,4 @@ bin/
 
 # Config files
 launchSettings.json
+*.user
