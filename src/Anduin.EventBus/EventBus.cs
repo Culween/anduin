@@ -71,7 +71,7 @@ namespace Anduin.EventBus
             }
         }
 
-        public async Task Publish(IntegrationEvent @event)
+        public async Task PublishAsync(IntegrationEvent @event)
         {
             //topic = topic ?? _options.DefaultPublishTopic;
             try
@@ -110,6 +110,16 @@ namespace Anduin.EventBus
         private string GetRouteKey(IntegrationEvent @event)
         {
             return @event.RouteKey ?? @event.Id;
+        }
+
+        public Task PublishAsync<TEventData>(TEventData eventData) where TEventData : IEventData
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task PublishAsync(Type eventType, object eventData)
+        {
+            throw new NotImplementedException();
         }
     }
 }

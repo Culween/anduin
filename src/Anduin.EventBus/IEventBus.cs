@@ -1,6 +1,6 @@
-﻿using Anduin.EventBus.Events;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Anduin.EventBus.Events;
 
 namespace Anduin.EventBus
 {
@@ -8,7 +8,10 @@ namespace Anduin.EventBus
     {
         void Start();
 
-        Task Publish(IntegrationEvent @event);
+        Task PublishAsync<TEventData>(TEventData eventData)
+            where TEventData : IEventData;
+
+        Task PublishAsync(Type eventType, object eventData);
 
         void Subscribe<T, TH>()
             where T : IntegrationEvent
