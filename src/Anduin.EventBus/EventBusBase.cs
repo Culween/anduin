@@ -5,10 +5,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Anduin.EventBus.Events;
 using Anduin.EventBus.Serializers;
+using System.Collections.Generic;
 
 namespace Anduin.EventBus
 {
-    public class EventBus : IEventBus
+    public abstract class EventBusBase : IEventBus
     {
         private volatile bool _isConsuming = false;
 
@@ -16,15 +17,15 @@ namespace Anduin.EventBus
         private readonly IMessagePublisher _publisher;
         private readonly IMessageConsumer _consumer;
         private readonly IEventSerializer _serializer;
-        private readonly ILogger<EventBus> _logger;
+        private readonly ILogger<EventBusBase> _logger;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        public EventBus(
+        public EventBusBase(
             IOptions<EventBusOptions> options,
             IMessagePublisher publisher,
             IMessageConsumer consumer,
             IEventSerializer serializer,
-            ILogger<EventBus> logger
+            ILogger<EventBusBase> logger
             )
         {
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
@@ -77,7 +78,7 @@ namespace Anduin.EventBus
             try
             {
                 byte[] eventBytes = _serializer.Serialize(@event);
-                           
+
             }
             catch (Exception)
             {
@@ -85,8 +86,6 @@ namespace Anduin.EventBus
                 throw;
             }
         }
-
-
 
         public void Subscribe<T, TH>()
             where T : IntegrationEvent
@@ -114,12 +113,14 @@ namespace Anduin.EventBus
 
         public Task PublishAsync<TEventData>(TEventData eventData) where TEventData : IEventData
         {
-            throw new NotImplementedException();
+            return PublishAsync(typeof(TEventData), eventData);
         }
 
-        public Task PublishAsync(Type eventType, object eventData)
+        public abstract Task PublishAsync(Type eventType, object eventData);
+
+        protected virtual async Task TriggerHandlerAsync(Type eventType, object eventData, List<Exception> exceptions)
         {
-            throw new NotImplementedException();
+
         }
     }
 }
