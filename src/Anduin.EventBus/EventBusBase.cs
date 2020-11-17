@@ -122,5 +122,10 @@ namespace Anduin.EventBus
         {
 
         }
+
+        protected class EventTypeWithEventHandlerFactories
+        {
+            public Type EventType { get; }
+        }
     }
 }
