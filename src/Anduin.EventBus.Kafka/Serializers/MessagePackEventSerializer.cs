@@ -1,11 +1,10 @@
 ﻿using System;
 using MessagePack;
 using MessagePack.Resolvers;
-using Anduin.EventBus.Events;
 
-namespace Anduin.EventBus.Serializers
+namespace Anduin.EventBus.Kafka.Serializers
 {
-    public class MessagePackEventSerializer : IEventSerializer
+    class MessagePackEventSerializer : IEventSerializer
     {
         public IntegrationEvent Desrialize(Type eventType, byte[] eventBytes)
         {

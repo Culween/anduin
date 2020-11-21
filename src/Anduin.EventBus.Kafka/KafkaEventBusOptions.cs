@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Anduin.EventBus
+namespace Anduin.EventBus.Kafka
 {
-    public class EventBusOptions
+    public class KafkaEventBusOptions
     {
         public string DefaultPublishTopic { get; set; }
 
