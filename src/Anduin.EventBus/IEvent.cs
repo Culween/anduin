@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Anduin.EventBus
 {
-    public interface IEventData
+    public interface IEvent
     {
         DateTime EventTime { get; set; }
 

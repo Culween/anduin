@@ -2,13 +2,13 @@
 
 namespace Anduin.EventBus
 {
-    public class EventData : IEventData
+    public class EventBase : IEvent
     {
         public DateTime EventTime { get; set; }
 
         public object EventSource { get; set; }
 
-        public EventData()
+        public EventBase()
         {
             EventTime = DateTime.Now;
         }

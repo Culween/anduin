@@ -1,12 +1,9 @@
-﻿using Anduin.EventBus.Events;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Anduin.EventBus
 {
-    public interface IEventHandler
+    public interface IEventHandler<in TEvent> where TEvent : IEvent
     {
+        Task HandleEventAsync(TEvent @event);
     }
 }

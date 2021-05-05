@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Anduin.EventBus.Events;
 
 namespace Anduin.EventBus
 {
     public interface IEventBus
     {
-        void Start();
-
         Task PublishAsync<TEventData>(TEventData eventData)
-            where TEventData : IEventData;
+            where TEventData : IEvent;
 
         Task PublishAsync(Type eventType, object eventData);
 
-        void Subscribe<T, TH>()
-            where T : IntegrationEvent
-            where TH : IEventHandler<T>;
+        void Subscribe<TEvent, THandler>()
+            where TEvent : IEvent
+            where THandler : IEventHandler<TEvent>;
 
-        void Unsubscribe<T, TH>()
-            where T : IntegrationEvent
-            where TH : IEventHandler<T>;
+        void Unsubscribe<TEvent, THandler>()
+            where TEvent : IEvent
+            where THandler : IEventHandler<TEvent>;
     }
 }
