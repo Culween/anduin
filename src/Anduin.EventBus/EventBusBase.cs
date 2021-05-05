@@ -99,6 +99,7 @@ namespace Anduin.EventBus
             where THandler : IEventHandler<TEvent>
         {
             throw new NotImplementedException();
+
         }
 
         protected class EventTypeWithEventHandlerFactories
