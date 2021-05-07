@@ -70,7 +70,6 @@ namespace Anduin.EventBus
                     if (handlerInterface != null)
                     {
                         Type eventType = handlerInterface.GetGenericArguments()[0];
-
                         if (_eventAndHandlerMapping.ContainsKey(eventType))
                         {
                             List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
@@ -91,15 +90,42 @@ namespace Anduin.EventBus
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>
         {
-            throw new NotImplementedException();
+            Subscribe(typeof(TEvent), typeof(THandler));
+        }
+
+        public virtual void Subscribe(Type eventType, Type eventHandler)
+        {
+            if (_eventAndHandlerMapping.ContainsKey(eventType))
+            {
+                List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
+                
+                if (handlerTypes.Contains(eventHandler)) return;
+
+                handlerTypes.Add(eventHandler);
+                _eventAndHandlerMapping[eventType] = handlerTypes;
+            }
+            else
+            {
+                var handlerTypes = new List<Type> { eventHandler };
+                _eventAndHandlerMapping[eventType] = handlerTypes;
+            }
         }
 
         public void Unsubscribe<TEvent, THandler>()
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>
         {
-            throw new NotImplementedException();
+            Unsubscribe(typeof(TEvent), typeof(THandler));
+        }
 
+        public virtual void Unsubscribe(Type eventType, Type handlerType)
+        {
+            List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
+            if (handlerTypes.Contains(handlerType))
+            {
+                handlerTypes.Remove(handlerType);
+                _eventAndHandlerMapping[eventType] = handlerTypes;
+            }
         }
 
         protected class EventTypeWithEventHandlerFactories

@@ -14,8 +14,12 @@ namespace Anduin.EventBus
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>;
 
+        void Subscribe(Type eventType, Type handlerType);
+
         void Unsubscribe<TEvent, THandler>()
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>;
+
+        void Unsubscribe(Type eventType, Type handlerType);
     }
 }
