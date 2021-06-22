@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Anduin.EventBus.Events;
 using System.Collections.Generic;
 using System.Reflection;
@@ -22,18 +21,18 @@ namespace Anduin.EventBus
         /// <summary>
         /// 定义线程安全集合
         /// </summary>
-        private readonly ConcurrentDictionary<Type, List<Type>> _eventAndHandlerMapping;
+        protected ConcurrentDictionary<Type, List<Type>> EventAndHandlerMapping { get; }
 
         public EventBusBase(
-            IMessagePublisher publisher,
-            IMessageConsumer consumer,
-            ILogger<EventBusBase> logger
+            //IMessagePublisher publisher,
+            //IMessageConsumer consumer,
+            //ILogger<EventBusBase> logger
             )
         {
-            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
-            _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
-            _logger = logger;
-            _eventAndHandlerMapping = new ConcurrentDictionary<Type, List<Type>>();
+            //_publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+            //_consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+            //_logger = logger;
+            EventAndHandlerMapping = new ConcurrentDictionary<Type, List<Type>>();
         }
 
 
@@ -52,11 +51,41 @@ namespace Anduin.EventBus
             return PublishAsync(typeof(TEventData), eventData);
         }
 
+        /// <summary>
+        /// 本地或分布式 EventBus 各自实现该方法。
+        /// 本地实现 PublishAsync 调用 TriggerHandlersAsync，
+        /// 分布式实现 PublishAsync 采用分布式消息队列发送消息，另外实现订阅消息调用 TriggerHandlersAsync。
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="eventData"></param>
+        /// <returns></returns>
         public abstract Task PublishAsync(Type eventType, object eventData);
 
-        protected virtual async Task TriggerHandlerAsync(Type eventType, object eventData, List<Exception> exceptions)
+        protected virtual async Task TriggerHandlersAsync(Type eventType, object eventData, List<Exception> exceptions)
         {
+            // 支持多个 Handler 订阅同一个事件
+            if (EventAndHandlerMapping.ContainsKey(eventType)
+                && EventAndHandlerMapping[eventType]?.Count > 0)
+            {
+                foreach (var handler in EventAndHandlerMapping[eventType])
+                {
+                    try
+                    {
+                        var method = typeof(IEventHandler<>)
+                             .MakeGenericType(eventType)
+                             .GetMethod(
+                                 nameof(IEventHandler<IEvent>.HandleEventAsync),
+                                 new[] { eventType }
+                             );
 
+                        await ((Task)method.Invoke(handler, new[] { eventData }));
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptions.Add(ex);
+                    }
+                }
+            }
         }
 
         protected virtual void SubscribeHandlers()
@@ -70,17 +99,7 @@ namespace Anduin.EventBus
                     if (handlerInterface != null)
                     {
                         Type eventType = handlerInterface.GetGenericArguments()[0];
-                        if (_eventAndHandlerMapping.ContainsKey(eventType))
-                        {
-                            List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
-                            handlerTypes.Add(type);
-                            _eventAndHandlerMapping[eventType] = handlerTypes;
-                        }
-                        else
-                        {
-                            var handlerTypes = new List<Type> { type };
-                            _eventAndHandlerMapping[eventType] = handlerTypes;
-                        }
+                        Subscribe(eventType, type);
                     }
                 }
             }
@@ -95,19 +114,19 @@ namespace Anduin.EventBus
 
         public virtual void Subscribe(Type eventType, Type eventHandler)
         {
-            if (_eventAndHandlerMapping.ContainsKey(eventType))
+            if (EventAndHandlerMapping.ContainsKey(eventType))
             {
-                List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
-                
+                List<Type> handlerTypes = EventAndHandlerMapping[eventType];
+
                 if (handlerTypes.Contains(eventHandler)) return;
 
                 handlerTypes.Add(eventHandler);
-                _eventAndHandlerMapping[eventType] = handlerTypes;
+                EventAndHandlerMapping[eventType] = handlerTypes;
             }
             else
             {
                 var handlerTypes = new List<Type> { eventHandler };
-                _eventAndHandlerMapping[eventType] = handlerTypes;
+                EventAndHandlerMapping[eventType] = handlerTypes;
             }
         }
 
@@ -118,13 +137,19 @@ namespace Anduin.EventBus
             Unsubscribe(typeof(TEvent), typeof(THandler));
         }
 
+        /// <summary>
+        /// Unsubscribe handler.
+        /// ( You can leave abstract method to be implemented by subclass. )
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="handlerType"></param>
         public virtual void Unsubscribe(Type eventType, Type handlerType)
         {
-            List<Type> handlerTypes = _eventAndHandlerMapping[eventType];
+            List<Type> handlerTypes = EventAndHandlerMapping[eventType];
             if (handlerTypes.Contains(handlerType))
             {
                 handlerTypes.Remove(handlerType);
-                _eventAndHandlerMapping[eventType] = handlerTypes;
+                EventAndHandlerMapping[eventType] = handlerTypes;
             }
         }
 

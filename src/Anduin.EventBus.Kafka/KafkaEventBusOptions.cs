@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Confluent.Kafka;
+using System.Collections.Generic;
 
 namespace Anduin.EventBus.Kafka
 {
@@ -6,6 +7,8 @@ namespace Anduin.EventBus.Kafka
     {
         public string DefaultPublishTopic { get; set; }
 
-        public List<string> ConsumingTopics { get; set; }
+        public ProducerConfig Producer { get; set; }
+
+        public ConsumerConfig Consumer { get; set; }
     }
 }

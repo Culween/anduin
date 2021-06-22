@@ -11,17 +11,17 @@ namespace Anduin.EventBus.Kafka
     {
         private volatile bool _isConsuming = false;
 
-        private readonly EventBusOptions _options;
-        private readonly IMessagePublisher _publisher;
-        private readonly IMessageConsumer _consumer;
+        private readonly KafkaEventBusOptions _options;
+        private readonly IKafkaMessagePublisher _publisher;
+        private readonly IKafkaMessageConsumer _consumer;
         private readonly IEventSerializer _serializer;
         private readonly ILogger<KafkaEventBus> _logger;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public KafkaEventBus(
             IOptions<KafkaEventBusOptions> options,
-            IMessagePublisher publisher,
-            IMessageConsumer consumer,
+            IKafkaMessagePublisher publisher,
+            IKafkaMessageConsumer consumer,
             IEventSerializer serializer,
             ILogger<KafkaEventBus> logger
             ) : base()
@@ -38,6 +38,8 @@ namespace Anduin.EventBus.Kafka
 
         public void Start()
         {
+            SubscribeHandlers();
+
             if (!_isConsuming)
             {
                 _isConsuming = true;
@@ -70,5 +72,9 @@ namespace Anduin.EventBus.Kafka
             }
         }
 
+        public override Task PublishAsync(Type eventType, object eventData)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
