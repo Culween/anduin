@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{470AFDE1-7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anduin.EventBus", "src\Anduin.EventBus\Anduin.EventBus.csproj", "{1DD2AF3F-46D6-4BC0-9DFC-9EC34411C32A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anduin.EventBus.Kafka", "src\Anduin.EventBus.Kafka\Anduin.EventBus.Kafka.csproj", "{08C8D521-3AE8-4694-A0F3-8E7E96855D04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anduin.EventBus.Kafka", "src\Anduin.EventBus.Kafka\Anduin.EventBus.Kafka.csproj", "{08C8D521-3AE8-4694-A0F3-8E7E96855D04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anduin.Kafka", "src\Anduin.Kafka\Anduin.Kafka.csproj", "{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{08C8D521-3AE8-4694-A0F3-8E7E96855D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08C8D521-3AE8-4694-A0F3-8E7E96855D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08C8D521-3AE8-4694-A0F3-8E7E96855D04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{4468EFE0-FE5D-4E80-BDAD-C0CCEC81C820} = {D302DD80-CAE5-46B8-9CE1-F7E60749D282}
 		{1DD2AF3F-46D6-4BC0-9DFC-9EC34411C32A} = {470AFDE1-789E-4849-B5A6-17BCD0F1A19D}
 		{08C8D521-3AE8-4694-A0F3-8E7E96855D04} = {470AFDE1-789E-4849-B5A6-17BCD0F1A19D}
+		{C5F576D0-5C15-49EA-A7E6-CED7094A2F2D} = {470AFDE1-789E-4849-B5A6-17BCD0F1A19D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD3F08BC-4D0C-4FE4-94BF-97F42DBE5F34}
