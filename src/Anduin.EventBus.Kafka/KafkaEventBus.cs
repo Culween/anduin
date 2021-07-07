@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Anduin.EventBus.Kafka.Serializers;
+//using Anduin.EventBus.Kafka.Serializers;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
@@ -12,17 +12,17 @@ namespace Anduin.EventBus.Kafka
         private volatile bool _isConsuming = false;
 
         private readonly KafkaEventBusOptions _options;
-        private readonly IKafkaMessagePublisher _publisher;
-        private readonly IKafkaMessageConsumer _consumer;
-        private readonly IEventSerializer _serializer;
+        //private readonly IKafkaMessagePublisher _publisher;
+        //private readonly IKafkaMessageConsumer _consumer;
+        //private readonly IEventSerializer _serializer;
         private readonly ILogger<KafkaEventBus> _logger;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public KafkaEventBus(
             IOptions<KafkaEventBusOptions> options,
-            IKafkaMessagePublisher publisher,
-            IKafkaMessageConsumer consumer,
-            IEventSerializer serializer,
+            //IKafkaMessagePublisher publisher,
+            //IKafkaMessageConsumer consumer,
+            //IEventSerializer serializer,
             ILogger<KafkaEventBus> logger
             ) : base()
         {
@@ -30,9 +30,9 @@ namespace Anduin.EventBus.Kafka
             if (string.IsNullOrEmpty(_options.DefaultPublishTopic))
                 throw new ArgumentNullException(nameof(_options.DefaultPublishTopic));
 
-            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
-            _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            //_publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+            //_consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
+            //_serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _logger = logger;
         }
 
@@ -47,12 +47,12 @@ namespace Anduin.EventBus.Kafka
                 {
                     try
                     {
-                        _consumer.OnMessageReceived -= OnMessageReceived;
-                        _consumer.OnMessageReceived += OnMessageReceived;
+                        //_consumer.OnMessageReceived -= OnMessageReceived;
+                        //_consumer.OnMessageReceived += OnMessageReceived;
 
-                        var topics = _options.ConsumingTopics;
-                        _consumer.Subscribe(topics);
-                        _consumer.Listening(_cts.Token);
+                        //var topics = _options.ConsumingTopics;
+                        //_consumer.Subscribe(topics);
+                        //_consumer.Listening(_cts.Token);
                     }
                     catch (OperationCanceledException)
                     {

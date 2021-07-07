@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
-namespace Anduin.EventBus
+namespace Anduin.Kafka
 {
-    public interface IMessageConsumer
+    public interface IKafkaMessageConsumer
     {
         string ServerAddress { get; }
 
